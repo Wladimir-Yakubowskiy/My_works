@@ -52,7 +52,7 @@ class MineSweeper:
                 temp.append(btn)
             self.buttons.append(temp)
 
-    def right_click(self, event):
+    def right_click(self, event):       #правая кнопка мыши
 
         if MineSweeper.IS_GAME_OVER == True:    #чтобы не ставились флажки после проигрыша
             return
@@ -81,10 +81,10 @@ class MineSweeper:
 
     def click(self, clicked_button: MyButton):  # нажатие на кнопку
 
-        if MineSweeper.IS_GAME_OVER:
+        if MineSweeper.IS_GAME_OVER:        #блокирует поле после конца игры
             return None
 
-        if MineSweeper.IS_FIRST_CLICK:
+        if MineSweeper.IS_FIRST_CLICK:      #расстановки мин после первого нажатия
             self.insert_mines(clicked_button.number)
             self.count_mines_in_buttons()
 

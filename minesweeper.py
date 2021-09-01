@@ -42,12 +42,13 @@ class MineSweeper:
     RIGHT_CHOISE = 0        #верно угаданные мины
 
     def __init__(self):
-
+        top_frame = Frame(MineSweeper.window)
+        top_frame.grid(row=0, column=0)
         self.buttons = []
         for i in range(MineSweeper.ROW+2):    #создаём клетки
             temp = []
             for j in range(MineSweeper.COLUMNS+2):
-                btn = MyButton(MineSweeper.window, x=i, y=j)
+                btn = MyButton(top_frame, x=i, y=j)
                 btn.config(command=lambda botton=btn: self.click(botton))   #обработка нажатия
                 btn.bind('<Button-3>', self.right_click)
                 temp.append(btn)

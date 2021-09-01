@@ -17,7 +17,7 @@ colors = {
 class MyButton(Button):
 
     def __init__(self, master, x, y, number=0, *args, **kwargs, ):
-        super(MyButton, self).__init__(master, bg='silver', width=3, font='Calibri 15 bold', *args, **kwargs)
+        super(MyButton, self).__init__(master, bg='silver', width=3, font='Calibri 12 bold', *args, **kwargs)
         self.x = x     #координаты
         self.y = y
         self.number = number    #порядковый номер клетки
@@ -32,7 +32,7 @@ class MyButton(Button):
 class MineSweeper:
 
     window = Tk()
-    window.title = 'Сапёр'
+    window.resizable(False, False)
     ROW = 10
     COLUMNS = 10
     MINES = 10
@@ -43,7 +43,13 @@ class MineSweeper:
 
     def __init__(self):
         top_frame = Frame(MineSweeper.window)
-        top_frame.grid(row=0, column=0)
+        top_frame.pack()
+
+        time_label = Label(MineSweeper.window, text='Время 00:00')
+        mines_label = Label(MineSweeper.window, text='Мины')
+        time_label.pack(side=LEFT)
+        mines_label.pack(side=RIGHT)
+
         self.buttons = []
         for i in range(MineSweeper.ROW+2):    #создаём клетки
             temp = []
@@ -210,11 +216,11 @@ class MineSweeper:
                 btn.number = count
                 count += 1
 
-        for i in range(1, MineSweeper.ROW + 1):
-            Grid.columnconfigure(self.window, i, weight=1)
-
-        for i in range(1, MineSweeper.COLUMNS + 1):
-            Grid.rowconfigure(self.window, i, weight=1)
+        #for i in range(1, MineSweeper.ROW + 1):
+        #    Grid.columnconfigure(self.window, i, weight=1)
+#
+        #for i in range(1, MineSweeper.COLUMNS + 1):
+        #    Grid.rowconfigure(self.window, i, weight=1)
 
 
     def open_all_buttons(self):

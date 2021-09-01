@@ -32,6 +32,7 @@ class MyButton(Button):
 class MineSweeper:
 
     window = Tk()
+    window.title = 'Сапёр'
     ROW = 10
     COLUMNS = 10
     MINES = 10

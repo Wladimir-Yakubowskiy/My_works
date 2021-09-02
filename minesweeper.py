@@ -65,6 +65,9 @@ class MineSweeper:
         if MineSweeper.IS_GAME_OVER == True:    #чтобы не ставились флажки после проигрыша
             return
 
+        if MineSweeper.IS_FIRST_CLICK == True:  #чтобы не ставилась отметка до расстановки мин
+            return
+
         cur_btn = event.widget
         if MineSweeper.SUPPOSEDS_MINES < MineSweeper.MINES and cur_btn['state'] == 'normal':
 

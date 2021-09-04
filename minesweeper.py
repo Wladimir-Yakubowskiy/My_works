@@ -145,7 +145,8 @@ class MineSweeper:
                             cur_btn.config(bg='white')
                             next_btn = self.buttons[x+dx][y+dy]
                             if not next_btn.is_open and 1<=next_btn.x<=MineSweeper.ROW and 1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
-                                next_btn.config(bg='white')
+                                if next_btn['text'] != '!':
+                                    next_btn.config(bg='white')
                                 queue.append(next_btn)
 
     def reload(self):       #перезапускаем игру

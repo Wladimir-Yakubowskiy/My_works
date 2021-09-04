@@ -130,22 +130,23 @@ class MineSweeper:
         while queue:
             cur_btn = queue.pop()
             color = colors.get(cur_btn.count_bomb, 'black')
-            if cur_btn.count_bomb:
-                cur_btn.config(text=cur_btn.count_bomb, disabledforeground=color)
-            else:
-                cur_btn.config(text='', disabledforeground=color)
-            cur_btn.is_open = True
-            cur_btn.config(state='disabled', relief=SUNKEN)
+            if cur_btn['text'] != '!':
+                if cur_btn.count_bomb:
+                    cur_btn.config(text=cur_btn.count_bomb, disabledforeground=color)
+                else:
+                    cur_btn.config(text='', disabledforeground=color)
+                cur_btn.is_open = True
+                cur_btn.config(state='disabled', relief=SUNKEN)
 
-            if cur_btn.count_bomb == 0:
-                x, y = cur_btn.x, cur_btn.y
-                for dx in [-1, 0, 1]:
-                    for dy in [-1, 0, 1]:
-                        cur_btn.config(bg='white')
-                        next_btn = self.buttons[x+dx][y+dy]
-                        if not next_btn.is_open and 1<=next_btn.x<=MineSweeper.ROW and 1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
-                            next_btn.config(bg='white')
-                            queue.append(next_btn)
+                if cur_btn.count_bomb == 0:
+                    x, y = cur_btn.x, cur_btn.y
+                    for dx in [-1, 0, 1]:
+                        for dy in [-1, 0, 1]:
+                            cur_btn.config(bg='white')
+                            next_btn = self.buttons[x+dx][y+dy]
+                            if not next_btn.is_open and 1<=next_btn.x<=MineSweeper.ROW and 1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
+                                next_btn.config(bg='white')
+                                queue.append(next_btn)
 
     def reload(self):       #перезапускаем игру
         [child.destroy() for child in self.window.winfo_children()]

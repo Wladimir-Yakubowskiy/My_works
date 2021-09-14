@@ -14,15 +14,16 @@ colors = {
     8: 'crimson'
 }
 
+
 class MyButton(Button):
 
     def __init__(self, master, x, y, number=0, *args, **kwargs, ):
         super(MyButton, self).__init__(master, bg='silver', width=3, font='Calibri 12 bold', *args, **kwargs)
-        self.x = x     #координаты
+        self.x = x  # координаты
         self.y = y
-        self.number = number    #порядковый номер клетки
-        self.is_mine = False    #является ли клетка миной
-        self.count_bomb = 0     #сколько бомб вокруг, по умолчанию 0
+        self.number = number  # порядковый номер клетки
+        self.is_mine = False  # является ли клетка миной
+        self.count_bomb = 0  # сколько бомб вокруг, по умолчанию 0
         self.is_open = False
 
     def __repr__(self):
@@ -30,7 +31,6 @@ class MyButton(Button):
 
 
 class MineSweeper:
-
     window = Tk()
     window.resizable(False, False)
     ROW = 10
@@ -38,36 +38,40 @@ class MineSweeper:
     MINES = 10
     IS_GAME_OVER = False
     IS_FIRST_CLICK = True
-    SUPPOSEDS_MINES = 0     #предполагаемые мины
-    RIGHT_CHOISE = 0        #верно угаданные мины
+    SUPPOSEDS_MINES = 0  # предполагаемые мины
+    RIGHT_CHOISE = 0  # верно угаданные мины
 
     top_frame = Frame(window)
     top_frame.pack()
 
-    time_label = Label(window, text='Время 00:00')
-    mines_label = Label(window, text='Мины')
-    time_label.pack(side=LEFT)
-    mines_label.pack(side=RIGHT)
+    time_label_1 = Label(window, text='Время ')
+    mines_label_1 = Label(window, text='Мины')
+    time_label_2 = Label(window, text='00:00 ')
+    mines_label_2 = Label(window, text='0')
+
+    time_label_1.pack(side=LEFT)
+    time_label_2.pack(side=LEFT)
+    mines_label_2.pack(side=RIGHT)
+    mines_label_1.pack(side=RIGHT)
 
     def __init__(self):
 
-
         self.buttons = []
-        for i in range(MineSweeper.ROW+2):    #создаём клетки
+        for i in range(MineSweeper.ROW + 2):  # создаём клетки
             temp = []
-            for j in range(MineSweeper.COLUMNS+2):
+            for j in range(MineSweeper.COLUMNS + 2):
                 btn = MyButton(MineSweeper.top_frame, x=i, y=j)
-                btn.config(command=lambda botton=btn: self.click(botton))   #обработка нажатия
+                btn.config(command=lambda botton=btn: self.click(botton))  # обработка нажатия
                 btn.bind('<Button-3>', self.right_click)
                 temp.append(btn)
             self.buttons.append(temp)
 
-    def right_click(self, event):       #правая кнопка мыши
+    def right_click(self, event):  # правая кнопка мыши
 
-        if MineSweeper.IS_GAME_OVER == True:    #чтобы не ставились флажки после проигрыша
+        if MineSweeper.IS_GAME_OVER == True:  # чтобы не ставились флажки после проигрыша
             return
 
-        if MineSweeper.IS_FIRST_CLICK == True:  #чтобы не ставилась отметка до расстановки мин
+        if MineSweeper.IS_FIRST_CLICK == True:  # чтобы не ставилась отметка до расстановки мин
             return
 
         cur_btn = event.widget
@@ -88,19 +92,20 @@ class MineSweeper:
             if cur_btn.is_mine:
                 MineSweeper.RIGHT_CHOISE -= 1
 
+        MineSweeper.mines_label_2['text'] = MineSweeper.SUPPOSEDS_MINES
+
         if MineSweeper.RIGHT_CHOISE == MineSweeper.MINES:
             showinfo('Поздравляем!', 'Вы победили')
             MineSweeper.IS_GAME_OVER
 
     def click(self, clicked_button: MyButton):  # нажатие на кнопку
 
-        if MineSweeper.IS_GAME_OVER:        #блокирует поле после конца игры
+        if MineSweeper.IS_GAME_OVER:  # блокирует поле после конца игры
             return None
 
-        if MineSweeper.IS_FIRST_CLICK:      #расстановки мин после первого нажатия
+        if MineSweeper.IS_FIRST_CLICK:  # расстановки мин после первого нажатия
             self.insert_mines(clicked_button.number)
             self.count_mines_in_buttons()
-
 
         color = colors.get(clicked_button.count_bomb, 'black')
         if clicked_button.is_mine:
@@ -126,7 +131,7 @@ class MineSweeper:
         else:
             clicked_button.config(state='disabled', relief=SUNKEN, bg='white')
 
-    def bredth_first_search(self, btn: MyButton):   #обход соседних кнопок
+    def bredth_first_search(self, btn: MyButton):  # обход соседних кнопок
 
         queue = [btn]
         while queue:
@@ -145,23 +150,25 @@ class MineSweeper:
                     for dx in [-1, 0, 1]:
                         for dy in [-1, 0, 1]:
                             cur_btn.config(bg='white')
-                            next_btn = self.buttons[x+dx][y+dy]
-                            if not next_btn.is_open and 1<=next_btn.x<=MineSweeper.ROW and 1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
+                            next_btn = self.buttons[x + dx][y + dy]
+                            if not next_btn.is_open and 1 <= next_btn.x <= MineSweeper.ROW and 1 <= next_btn.y <= MineSweeper.COLUMNS and next_btn not in queue:
                                 if next_btn['text'] != '!':
                                     next_btn.config(bg='white')
                                 queue.append(next_btn)
 
-    def reload(self):       #перезапускаем игру
-        for widget in MineSweeper.top_frame.winfo_children():
+    def reload(self):  # перезапускаем игру
+
+        for widget in MineSweeper.top_frame.winfo_children():  # удаляем кнопки внутри top_frame
             widget.destroy()
 
         self.__init__()
+
         MineSweeper.IS_GAME_OVER = False
         MineSweeper.IS_FIRST_CLICK = True
         MineSweeper.RIGHT_CHOISE = 0
         MineSweeper.SUPPOSEDS_MINES = 0
 
-
+        MineSweeper.mines_label_2['text'] = '0'  # возвращаем отображаемый счётчик мин на 0
 
         self.create_widgets()
 
@@ -185,7 +192,7 @@ class MineSweeper:
         Label(win_settings, text='Мины (1-100)').grid(row=2, column=0)
 
         Ok = Button(win_settings, text='Применить',
-               command=lambda: self.change_settings(row_entry, column_entry, mines_entry, win_settings))
+                    command=lambda: self.change_settings(row_entry, column_entry, mines_entry, win_settings))
         Ok.grid(row=3, column=0, columnspan=2)
 
     def change_settings(self, row: Entry, columns: Entry, mines: Entry, win_settings):
@@ -221,23 +228,16 @@ class MineSweeper:
         menubar.add_cascade(label='Файл', menu=settings_menu)
 
         count = 1
-        for i in range(1, MineSweeper.ROW+1):
-            for j in range(1, MineSweeper.COLUMNS+1):
+        for i in range(1, MineSweeper.ROW + 1):
+            for j in range(1, MineSweeper.COLUMNS + 1):
                 btn = self.buttons[i][j]
                 btn.grid(row=i, column=j, stick='WENS')
                 btn.number = count
                 count += 1
 
-        #for i in range(1, MineSweeper.ROW + 1):
-        #    Grid.columnconfigure(self.window, i, weight=1)
-#
-        #for i in range(1, MineSweeper.COLUMNS + 1):
-        #    Grid.rowconfigure(self.window, i, weight=1)
-
-
     def open_all_buttons(self):
-        for i in range(MineSweeper.ROW+2):
-            for j in range(MineSweeper.COLUMNS+2):
+        for i in range(MineSweeper.ROW + 2):
+            for j in range(MineSweeper.COLUMNS + 2):
                 btn = self.buttons[i][j]
                 if btn.is_mine:
                     btn.config(text='*', bg='red')
@@ -249,7 +249,6 @@ class MineSweeper:
         self.create_widgets()
         MineSweeper.window.mainloop()
 
-
     def count_mines_in_buttons(self):
         for i in range(1, MineSweeper.ROW + 1):
             for j in range(1, MineSweeper.COLUMNS + 1):
@@ -258,20 +257,20 @@ class MineSweeper:
                 if not btn.is_mine:
                     for row_dx in [-1, 0, 1]:
                         for col_dx in [-1, 0, 1]:
-                            neighbou = self.buttons[i+row_dx][j+col_dx]
+                            neighbou = self.buttons[i + row_dx][j + col_dx]
                             if neighbou.is_mine:
                                 count_bomb += 1
                 btn.count_bomb = count_bomb
 
-    def get_mines_spaces(self, exclude_number: int):     #генерирует индексы заминированных клеток
-        indexes = list(range(1, MineSweeper.ROW*MineSweeper.COLUMNS + 1))
-        indexes.remove(exclude_number)                  #исключает индекс первой нажатой кнопки
-        shuffle(indexes)                                #перемешивает индексы кнопок
-        return indexes[:MineSweeper.MINES]              #возвращает индексы мин
+    def get_mines_spaces(self, exclude_number: int):  # генерирует индексы заминированных клеток
+        indexes = list(range(1, MineSweeper.ROW * MineSweeper.COLUMNS + 1))
+        indexes.remove(exclude_number)  # исключает индекс первой нажатой кнопки
+        shuffle(indexes)  # перемешивает индексы кнопок
+        return indexes[:MineSweeper.MINES]  # возвращает индексы мин
 
-    def insert_mines(self, number: int):     #расставляет мины по клеткам
+    def insert_mines(self, number: int):  # расставляет мины по клеткам
         MineSweeper.IS_FIRST_CLICK = False
-        index_mines = self.get_mines_spaces(number)   #принимает индексы заминированных клеток
+        index_mines = self.get_mines_spaces(number)  # принимает индексы заминированных клеток
         for i in range(1, MineSweeper.ROW + 1):
             for j in range(1, MineSweeper.COLUMNS + 1):
                 btn = self.buttons[i][j]
@@ -279,16 +278,5 @@ class MineSweeper:
                     btn.is_mine = True
 
 
-
 game = MineSweeper()
 game.start()
-
-
-
-
-
-
-
-
-
-

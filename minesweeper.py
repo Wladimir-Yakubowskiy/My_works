@@ -41,20 +41,22 @@ class MineSweeper:
     SUPPOSEDS_MINES = 0     #предполагаемые мины
     RIGHT_CHOISE = 0        #верно угаданные мины
 
-    def __init__(self):
-        top_frame = Frame(MineSweeper.window)
-        top_frame.pack()
+    top_frame = Frame(window)
+    top_frame.pack()
 
-        time_label = Label(MineSweeper.window, text='Время 00:00')
-        mines_label = Label(MineSweeper.window, text='Мины')
-        time_label.pack(side=LEFT)
-        mines_label.pack(side=RIGHT)
+    time_label = Label(window, text='Время 00:00')
+    mines_label = Label(window, text='Мины')
+    time_label.pack(side=LEFT)
+    mines_label.pack(side=RIGHT)
+
+    def __init__(self):
+
 
         self.buttons = []
         for i in range(MineSweeper.ROW+2):    #создаём клетки
             temp = []
             for j in range(MineSweeper.COLUMNS+2):
-                btn = MyButton(top_frame, x=i, y=j)
+                btn = MyButton(MineSweeper.top_frame, x=i, y=j)
                 btn.config(command=lambda botton=btn: self.click(botton))   #обработка нажатия
                 btn.bind('<Button-3>', self.right_click)
                 temp.append(btn)
@@ -150,12 +152,17 @@ class MineSweeper:
                                 queue.append(next_btn)
 
     def reload(self):       #перезапускаем игру
-        [child.destroy() for child in self.window.winfo_children()]
+        for widget in MineSweeper.top_frame.winfo_children():
+            widget.destroy()
+
         self.__init__()
         MineSweeper.IS_GAME_OVER = False
         MineSweeper.IS_FIRST_CLICK = True
         MineSweeper.RIGHT_CHOISE = 0
         MineSweeper.SUPPOSEDS_MINES = 0
+
+
+
         self.create_widgets()
 
     def create_settings_win(self):

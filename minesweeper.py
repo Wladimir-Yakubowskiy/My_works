@@ -99,6 +99,7 @@ class MineSweeper:
         MineSweeper.mines_label_2['text'] = MineSweeper.SUPPOSEDS_MINES
 
         if MineSweeper.RIGHT_CHOISE == MineSweeper.MINES:
+            MineSweeper.window.after_cancel(MineSweeper.after_id)   #останавливаем таймер
             showinfo('Поздравляем!', 'Вы победили')
             MineSweeper.IS_GAME_OVER
 
@@ -120,6 +121,7 @@ class MineSweeper:
 
         color = colors.get(clicked_button.count_bomb, 'black')
         if clicked_button.is_mine:
+            MineSweeper.window.after_cancel(MineSweeper.after_id)   #останавливаем таймер
             clicked_button.config(text='*', bg='red')
             clicked_button.is_open = True
             MineSweeper.IS_GAME_OVER = True

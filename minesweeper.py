@@ -44,15 +44,19 @@ class MineSweeper:
     top_frame = Frame(window)
     top_frame.pack()
 
+    temp = 0  # счётчик секунд
+    after_id = ''  # идентификатор метода after
+
     time_label_1 = Label(window, text='Время ')
     mines_label_1 = Label(window, text='Мины')
-    time_label_2 = Label(window, text='00:00 ')
+    time_label_2 = Label(window, text=temp)
     mines_label_2 = Label(window, text='0')
 
-    time_label_1.pack(side=LEFT)
-    time_label_2.pack(side=LEFT)
-    mines_label_2.pack(side=RIGHT)
-    mines_label_1.pack(side=RIGHT)
+    time_label_1.pack(side=LEFT)    # "время"
+    time_label_2.pack(side=LEFT)    # количество секунд
+    mines_label_2.pack(side=RIGHT)  # "мины"
+    mines_label_1.pack(side=RIGHT)  # количество отметок
+
 
     def __init__(self):
 
@@ -98,12 +102,19 @@ class MineSweeper:
             showinfo('Поздравляем!', 'Вы победили')
             MineSweeper.IS_GAME_OVER
 
+    def tick(self):
+
+        MineSweeper.after_id = MineSweeper.window.after(1000, MineSweeper.tick, 0)  #   после MineSweeper.tick поставил 0, т.к. в документации метод after требует какие-то аргументы
+        MineSweeper.time_label_2.configure(text=MineSweeper.temp)
+        MineSweeper.temp += 1
+
     def click(self, clicked_button: MyButton):  # нажатие на кнопку
 
         if MineSweeper.IS_GAME_OVER:  # блокирует поле после конца игры
             return None
 
         if MineSweeper.IS_FIRST_CLICK:  # расстановки мин после первого нажатия
+            self.tick()
             self.insert_mines(clicked_button.number)
             self.count_mines_in_buttons()
 
@@ -157,6 +168,10 @@ class MineSweeper:
                                 queue.append(next_btn)
 
     def reload(self):  # перезапускаем игру
+
+        MineSweeper.window.after_cancel(MineSweeper.after_id)   #останавливаем счётчик времени
+        MineSweeper.temp = 0                                    #обнуляем счётчик времени
+        MineSweeper.time_label_2.configure(text=MineSweeper.temp)
 
         for widget in MineSweeper.top_frame.winfo_children():  # удаляем кнопки внутри top_frame
             widget.destroy()

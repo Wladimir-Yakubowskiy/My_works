@@ -26,8 +26,6 @@ class MyButton(Button):
         self.count_bomb = 0  # сколько бомб вокруг, по умолчанию 0
         self.is_open = False
 
-    def __repr__(self):
-        return f'MyButton {self.x} {self.y} {self.number} {self.is_mine}'
 
 
 class MineSweeper:
@@ -170,8 +168,8 @@ class MineSweeper:
                                 queue.append(next_btn)
 
     def reload(self):  # перезапускаем игру
-
-        MineSweeper.window.after_cancel(MineSweeper.after_id)   #останавливаем счётчик времени
+        if MineSweeper.after_id != '':
+            MineSweeper.window.after_cancel(MineSweeper.after_id)   #останавливаем счётчик времени
         MineSweeper.temp = 0                                    #обнуляем счётчик времени
         MineSweeper.time_label_2.configure(text=MineSweeper.temp)
 
@@ -189,28 +187,41 @@ class MineSweeper:
 
         self.create_widgets()
 
+    def low_difficult(self):
+        MineSweeper.ROW = 10
+        MineSweeper.COLUMNS = 10
+        MineSweeper.MINES = 10
+        self.reload()
+
+    def medium_difficult(self):
+        MineSweeper.ROW = 15
+        MineSweeper.COLUMNS = 15
+        MineSweeper.MINES = 35
+        self.reload()
+
+    def high_difficult(self):
+        MineSweeper.ROW = 20
+        MineSweeper.COLUMNS = 20
+        MineSweeper.MINES = 60
+        self.reload()
+
     def create_settings_win(self):
         win_settings = Toplevel(self.window)
-        win_settings.wm_title('Настройки')
+        win_settings.wm_title('Сложность игры')
 
-        row_entry = Entry(win_settings)
-        row_entry.grid(row=0, column=1, padx=20, pady=20)
-        row_entry.insert(0, MineSweeper.ROW)
-        Label(win_settings, text='Строки (1-100').grid(row=0, column=0)
+        low = Button(win_settings,text='Низкая', command=lambda: self.low_difficult())
+        low.grid(row=0, column=1, padx=20, pady=20)
 
-        column_entry = Entry(win_settings)
-        column_entry.grid(row=1, column=1, padx=20, pady=20)
-        column_entry.insert(0, MineSweeper.COLUMNS)
-        Label(win_settings, text='Столбцы (1-100)').grid(row=1, column=0)
+        Label(win_settings, text='10x10, 10 мин').grid(row=0, column=0)
 
-        mines_entry = Entry(win_settings)
-        mines_entry.grid(row=2, column=1, padx=20, pady=20)
-        mines_entry.insert(0, MineSweeper.MINES)
-        Label(win_settings, text='Мины (1-100)').grid(row=2, column=0)
+        medium = Button(win_settings, text='Средняя', command=lambda: self.medium_difficult())
+        medium.grid(row=1, column=1, padx=20, pady=20)
+        Label(win_settings, text='15x15, 35 мин').grid(row=1, column=0)
 
-        Ok = Button(win_settings, text='Применить',
-                    command=lambda: self.change_settings(row_entry, column_entry, mines_entry, win_settings))
-        Ok.grid(row=3, column=0, columnspan=2)
+        hard = Button(win_settings, text='Высокая', command=lambda: self.high_difficult())
+        hard.grid(row=2, column=1, padx=20, pady=20)
+        Label(win_settings, text='20х20, 60 мин').grid(row=2, column=0)
+
 
     def change_settings(self, row: Entry, columns: Entry, mines: Entry, win_settings):
 
@@ -240,7 +251,7 @@ class MineSweeper:
         self.window.config(menu=menubar)
         settings_menu = Menu(self.window, tearoff=0)
         settings_menu.add_command(label='Играть', command=self.reload)
-        settings_menu.add_command(label='Настройки', command=self.create_settings_win)
+        settings_menu.add_command(label='Сложность игры', command=self.create_settings_win)
         settings_menu.add_command(label='Выход', command=self.window.destroy)
         menubar.add_cascade(label='Файл', menu=settings_menu)
 
